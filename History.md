@@ -1,4 +1,30 @@
 
+0.5.1 / 2012-01-13 
+==================
+
+  * Added better `.json`
+  * Added better `.html`
+
+0.5.0 / 2012-01-12 
+==================
+
+  * Added string matching to `.throw()` [serby]
+  * Added regexp matching to `.throw()` [serby]
+  * Added `.includeEql()` [RubenVerborgh]
+  * Added `.should.be.html`
+  * Added `.should.be.json`
+  * Added optional description args to most matchers [Mike Swift]
+
+0.4.2 / 2011-12-17 
+==================
+
+  * Fixed .header() for realzzz
+
+0.4.1 / 2011-12-16 
+==================
+
+  * Fixed: chain .header() to retain negation
+
 0.4.0 / 2011-12-16 
 ==================
 

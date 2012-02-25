@@ -80,12 +80,20 @@ module.exports = {
     err(function(){
       'test'.should.not.be.a('string');
     }, "expected 'test' not to be a string");
+
+    err(function(){
+      'test'.should.not.be.a('string', 'foo');
+    }, "expected 'test' not to be a string | foo");
     
     (5).should.be.a('number');
 
     err(function(){
       (5).should.not.be.a('number');
     }, "expected 5 not to be a number");
+
+    err(function(){
+      (5).should.not.be.a('number', 'foo');
+    }, "expected 5 not to be a number | foo");
   },
   
   'test instanceof': function(){
@@ -95,6 +103,10 @@ module.exports = {
     err(function(){
       (3).should.an.instanceof(Foo);
     }, "expected 3 to be an instance of Foo");
+
+    err(function(){
+      (3).should.an.instanceof(Foo, 'foo');
+    }, "expected 3 to be an instance of Foo | foo");
   },
   
   'test within(start, finish)': function(){
@@ -110,6 +122,14 @@ module.exports = {
     err(function(){
       (10).should.be.within(50,100);
     }, "expected 10 to be within 50..100");
+
+    err(function(){
+      (5).should.not.be.within(4,6, 'foo');
+    }, "expected 5 to not be within 4..6 | foo");
+
+    err(function(){
+      (10).should.be.within(50,100, 'foo');
+    }, "expected 10 to be within 50..100 | foo");
   },
   
   'test above(n)': function(){
@@ -125,6 +145,37 @@ module.exports = {
     err(function(){
       (10).should.not.be.above(6);
     }, "expected 10 to be below 6");
+
+    err(function(){
+      (5).should.be.above(6, 'foo');
+    }, "expected 5 to be above 6 | foo");
+    
+    err(function(){
+      (10).should.not.be.above(6, 'foo');
+    }, "expected 10 to be below 6 | foo");
+  },
+
+  'test below(n)': function(){
+    (2).should.be.below(5);
+    (2).should.be.lessThan(5);
+    (5).should.not.be.below(5);
+    (6).should.not.be.below(5);
+
+    err(function(){
+      (6).should.be.below(5);
+    }, "expected 6 to be below 5");
+    
+    err(function(){
+      (6).should.not.be.below(10);
+    }, "expected 6 to be above 10");
+
+    err(function(){
+      (6).should.be.below(5, 'foo');
+    }, "expected 6 to be below 5 | foo");
+    
+    err(function(){
+      (6).should.not.be.below(10, 'foo');
+    }, "expected 6 to be above 10 | foo");
   },
   
   'test match(regexp)': function(){
@@ -138,6 +189,14 @@ module.exports = {
     err(function(){
       'foobar'.should.not.match(/^foo/i)
     }, "expected 'foobar' not to match /^foo/i");
+
+    err(function(){
+      'foobar'.should.match(/^bar/i, 'foo')
+    }, "expected 'foobar' to match /^bar/i | foo");
+    
+    err(function(){
+      'foobar'.should.not.match(/^foo/i, 'foo')
+    }, "expected 'foobar' not to match /^foo/i | foo");
   },
   
   'test length(n)': function(){
@@ -152,6 +211,15 @@ module.exports = {
     err(function(){
       'asd'.should.not.have.length(3);
     }, "expected 'asd' to not have a length of 3");
+
+    err(function(){
+      'asd'.should.have.length(4, 'foo');
+    }, "expected 'asd' to have a length of 4 but got 3 | foo");
+    
+    err(function(){
+      'asd'.should.not.have.length(3, 'foo');
+    }, "expected 'asd' to not have a length of 3 | foo");
+
   },
   
   'test eql(val)': function(){
@@ -163,8 +231,34 @@ module.exports = {
     err(function(){
       (4).should.eql(3);
     }, 'expected 4 to equal 3');
+
+    err(function(){
+      (4).should.eql(3, "foo");
+    }, 'expected 4 to equal 3 | foo');
+
+    err(function(){
+      (3).should.not.eql(3, "foo");
+    }, 'expected 3 to not equal 3 | foo');
   },
-  
+
+  'test .json': function(){
+    var req = {
+      headers: {
+        'content-type': 'application/json'
+      }
+    };
+
+    req.should.be.json;
+
+    var req = {
+      headers: {
+        'content-type': 'application/json; charset=utf-8'
+      }
+    };
+
+    req.should.be.json;
+  },
+
   'test equal(val)': function(){
     'test'.should.equal('test');
     (1).should.equal(1);
@@ -176,6 +270,14 @@ module.exports = {
     err(function(){
       '4'.should.equal(4);
     }, "expected '4' to equal 4");
+
+    err(function(){
+      (3).should.equal(4, "foo");
+    }, "expected 3 to equal 4 | foo");
+
+    err(function(){
+      (4).should.not.equal(4, "foo");
+    }, "expected 4 to not equal 4 | foo");
   },
   
   'test empty': function(){
@@ -203,6 +305,14 @@ module.exports = {
     err(function(){
       'asd'.should.have.property('foo');
     }, "expected 'asd' to have a property 'foo'");
+
+    err(function(){
+      'asd'.should.have.property('foo', undefined, 'foo');
+    }, "expected 'asd' to have a property 'foo' | foo");
+
+    err(function(){
+      'asd'.should.not.have.property('length', undefined, 'foo');
+    }, "expected 'asd' to not have a property 'length' | foo");
   },
   
   'test property(name, val)': function(){
@@ -224,6 +334,22 @@ module.exports = {
     err(function(){
       'asd'.should.have.property('constructor', Number);
     }, "expected 'asd' to have a property 'constructor' of [Function: Number], but got [Function: String]");
+
+    err(function(){
+      'asd'.should.have.property('length', 4, 'foo');
+    }, "expected 'asd' to have a property 'length' of 4, but got 3 | foo");
+    
+    err(function(){
+      'asd'.should.not.have.property('length', 3, 'foo');
+    }, "expected 'asd' to not have a property 'length' of 3 | foo");
+    
+    err(function(){
+      'asd'.should.not.have.property('foo', 3, 'foo');
+    }, "'asd' has no property 'foo' | foo");
+    
+    err(function(){
+      'asd'.should.have.property('constructor', Number, 'foo');
+    }, "expected 'asd' to have a property 'constructor' of [Function: Number], but got [Function: String] | foo");
   },
   
   'test ownProperty(name)': function(){
@@ -234,6 +360,14 @@ module.exports = {
     err(function(){
       ({ length: 12 }).should.not.have.ownProperty('length');
     }, "expected { length: 12 } to not have own property 'length'");
+
+    err(function(){
+      ({ length: 12 }).should.not.have.ownProperty('length', 'foo');
+    }, "expected { length: 12 } to not have own property 'length' | foo");
+
+    err(function(){
+      ({ length: 12 }).should.have.ownProperty('foo', 'foo');
+    }, "expected { length: 12 } to have own property 'foo' | foo");
   },
 
   'test include() with string': function(){
@@ -248,6 +382,14 @@ module.exports = {
     err(function(){
       'foobar'.should.not.include('bar');
     }, "expected 'foobar' to not include 'bar'");
+
+    err(function(){
+      'foobar'.should.include('baz', 'foo');
+    }, "expected 'foobar' to include 'baz' | foo");
+    
+    err(function(){
+      'foobar'.should.not.include('bar', 'foo');
+    }, "expected 'foobar' to not include 'bar' | foo");
   },
 
   'test include() with array': function(){
@@ -265,6 +407,37 @@ module.exports = {
     err(function(){
       ['bar', 'foo'].should.not.include('foo');
     }, "expected [ 'bar', 'foo' ] to not include 'foo'");
+
+    err(function(){
+      ['foo'].should.include('bar', 'foo');
+    }, "expected [ 'foo' ] to include 'bar' | foo");
+    
+    err(function(){
+      ['bar', 'foo'].should.not.include('foo', 'foo');
+    }, "expected [ 'bar', 'foo' ] to not include 'foo' | foo");
+  },
+  
+  'test includeEql() with array': function(){
+    [['foo'], ['bar']].should.includeEql(['foo']);
+    [['foo'], ['bar']].should.includeEql(['bar']);
+    [['foo'], ['bar']].should.not.includeEql(['baz']);
+    [].should.not.includeEql(['baz']);
+
+    err(function(){
+      [['foo']].should.includeEql(['bar']);
+    }, "expected [ [ 'foo' ] ] to include an object equal to [ 'bar' ]");
+    
+    err(function(){
+      [['foo']].should.not.includeEql(['foo']);
+    }, "expected [ [ 'foo' ] ] to not include an object equal to [ 'foo' ]");
+
+    err(function(){
+      [['foo']].should.includeEql(['bar'], 'foo');
+    }, "expected [ [ 'foo' ] ] to include an object equal to [ 'bar' ] | foo");
+    
+    err(function(){
+      [['foo']].should.not.includeEql(['foo'], 'foo');
+    }, "expected [ [ 'foo' ] ] to not include an object equal to [ 'foo' ] | foo");
   },
   
   'test keys(array)': function(){
@@ -333,5 +506,29 @@ module.exports = {
         throw new Error('fail');
       }).should.not.throw();
     }, 'expected no exception to be thrown, got "fail"');
+  },
+
+  'test throw() with regex message': function(){
+    (function(){ throw new Error('fail'); }).should.throw(/fail/);
+
+    err(function(){
+      (function(){}).should.throw(/fail/);
+    }, 'expected an exception to be thrown');
+
+    err(function(){
+      (function(){ throw new Error('error'); }).should.throw(/fail/);
+    }, "expected an exception to be thrown with a message matching /fail/, but got 'error'");
+  },
+
+  'test throw() with string message': function(){
+    (function(){ throw new Error('fail'); }).should.throw('fail');
+
+    err(function(){
+      (function(){}).should.throw('fail');
+    }, 'expected an exception to be thrown');
+
+    err(function(){
+      (function(){ throw new Error('error'); }).should.throw('fail');
+    }, "expected an exception to be thrown with a message matching 'fail', but got 'error'");
   }
-};
+}; 
